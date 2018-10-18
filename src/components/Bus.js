@@ -1,4 +1,6 @@
 import React, {Component} from 'react'
+import { iconRedDot } from '../Icons';
+import { Marker, Popup } from 'react-leaflet'
 
 class Bus extends Component {
 
@@ -65,10 +67,18 @@ class Bus extends Component {
 
   render() {
     return (
-      <p>
-        {this.state.id} arriving at {this.state.nextStation} in {this.state.timeToStation} sec. [as of {this.state.timeOfPrediction}]<br/>
-        {this.state.nextStationLat}, {this.state.nextStationLon}
-      </p>
+      // <p>
+      //   {this.state.id} arriving at {this.state.nextStation} in {this.state.timeToStation} sec. [as of {this.state.timeOfPrediction}]<br/>
+      //   {this.state.nextStationLat}, {this.state.nextStationLon}
+      // </p>
+      <Marker
+        position={[this.state.nextStationLat, this.state.nextStationLon]}
+        icon={iconRedDot}
+      >
+        <Popup>
+          {this.state.id}
+        </Popup>
+      </Marker>
     )
   }
 }

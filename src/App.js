@@ -8,7 +8,7 @@ class App extends Component {
     super()
     this.state = {
       serverData: [],
-      line: 35,
+      line: 115,
 
       // for Leaflet
       lat: 51.505,
@@ -34,25 +34,21 @@ class App extends Component {
     const position = [this.state.lat, this.state.lng]
     return (
       <div className="App">
-        {/* <Line line={this.state.line} />
-
-        {this.state.serverData[0] &&
-          this.state.serverData.map(busId =>
-            <Bus id={busId} line={this.state.line} key={busId}/>
-          )
-        } */}
+        {/* <Line line={this.state.line} />*/}
 
         <Map className='map' center={position} zoom={this.state.zoom}>
         <TileLayer
           attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={position}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-      </Map>
+
+          {this.state.serverData[0] &&
+            this.state.serverData.map(busId =>
+              <Bus id={busId} line={this.state.line} key={busId}/>
+            )
+          }
+
+        </Map>
       </div>
     );
   }
