@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import Bus from './Bus'
 
 class Line extends Component {
 
@@ -8,12 +9,13 @@ class Line extends Component {
       line: this.props.line,
       origin: '',
       destination: '',
-      data: {}
+      data: {},
+      serverData: [],
     }
-    // console.log(this.state.id)
   }
 
   componentDidMount() {
+    // Get line info
     fetch('https://api.tfl.gov.uk/line/'+ this.state.line +'/route')
       .then(response => response.json())
       .then(data => {
@@ -21,14 +23,31 @@ class Line extends Component {
           data
         })
       })
+
+    // Get all buses
+    fetch('https://api.tfl.gov.uk/line/'+ this.state.line + '/arrivals')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({
+          serverData: [...new Set(
+              data.map(item => item.vehicleId)
+            )].sort(),
+          // lastUpdate: new Date()
+        })
+      })
   }
 
   render() {
     let data = this.state.data.routeSections
-    // console.log(data)
+    console.log(this.state.serverData)// <h1>Line {this.state.line}</h1>
+
     return (
-      <h1>Line {this.state.line}</h1>
-    )
+      <div>
+        {this.state.serverData.map(busId => (
+          <Bus id={busId} line={this.state.line} key={busId}/>
+        ))}
+      </div>
+    );
   }
 }
 

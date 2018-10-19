@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { iconRedDot } from '../Icons';
+import { iconBus } from '../assets/Icons';
 import { Marker, Popup } from 'react-leaflet'
 
 class Bus extends Component {
@@ -51,14 +51,13 @@ class Bus extends Component {
                 nextStationLon: r.lon
               })
             }
-
           })
 
       )
   }
 
   componentDidMount() {
-    this.interval = setInterval(() => this.update(), 5000)
+    this.interval = setInterval(() => this.update(), 3000)
   }
 
   componentWillUnmount() {
@@ -73,7 +72,7 @@ class Bus extends Component {
       // </p>
       <Marker
         position={[this.state.nextStationLat, this.state.nextStationLon]}
-        icon={iconRedDot}
+        icon={iconBus}
       >
         <Popup>
           {this.state.id}
