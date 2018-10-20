@@ -7,10 +7,10 @@ class Line extends Component {
     super(props)
     this.state = {
       line: this.props.line,
+      direction: '',
       origin: '',
       destination: '',
-      data: {},
-      serverData: [],
+      busesIds: [],
     }
   }
 
@@ -20,7 +20,9 @@ class Line extends Component {
       .then(response => response.json())
       .then(data => {
         this.setState({
-          data
+          direction: data.routeSections[0].direction,
+          origin: data.routeSections[0].originationName,
+          destination: data.routeSections[0].destinationName
         })
       })
 
@@ -29,21 +31,26 @@ class Line extends Component {
       .then(response => response.json())
       .then(data => {
         this.setState({
-          serverData: [...new Set(
+          busesIds: [...new Set(
               data.map(item => item.vehicleId)
-            )].sort(),
-          // lastUpdate: new Date()
+            )]
         })
       })
   }
 
   render() {
-    let data = this.state.data.routeSections
-    console.log(this.state.serverData)// <h1>Line {this.state.line}</h1>
+    console.log(
+      this.state.direction,
+      this.state.origin,
+      this.state.destination
+    )
+    console.log(this.state.busesIds)
+    // let data = this.state.data.routeSections
+    // console.log(this.state.serverData)// <h1>Line {this.state.line}</h1>
 
     return (
       <div>
-        {this.state.serverData.map(busId => (
+        {this.state.busesIds.map(busId => (
           <Bus id={busId} line={this.state.line} key={busId}/>
         ))}
       </div>
