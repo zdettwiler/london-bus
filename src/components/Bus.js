@@ -34,30 +34,35 @@ class Bus extends Component {
         this.setState({
           nextStation: soonestArrival.stationName,
           timeToStation: soonestArrival.timeToStation,
-          timeOfPrediction: soonestArrival.timestamp
+          timeOfPrediction: new Date(soonestArrival.timestamp)
         })
       })
-      .then(
-        fetch('https://api.tfl.gov.uk/line/'+ this.state.line +'/route/sequence/outbound')
-          .then(response => response.json())
-          .then(data => {
-            let r = data.stations.filter(stationObject => {
-              // console.log(stationObject.name)
-              return stationObject.name == this.state.nextStation
-            })[0]
-            if (r) {
-              this.setState({
-                nextStationLat: r.lat,
-                nextStationLon: r.lon
-              })
-            }
-          })
+      // .then(
+      //   fetch('https://api.tfl.gov.uk/line/'+ this.state.line +'/route/sequence/outbound')
+      //     .then(response => response.json())
+      //     .then(data => {
+      //       let r = data.stations.filter(stationObject => {
+      //         // console.log(stationObject.name)
+      //         return stationObject.name == this.state.nextStation
+      //       })[0]
+      //       if (r) {
+      //         this.setState({
+      //           nextStationLat: r.lat,
+      //           nextStationLon: r.lon
+      //         })
+      //       }
+      //     })
+      // )
 
-      )
+    console.log(
+      this.state.timeOfPrediction + '\n'
+      + this.state.id + ': arriving at ' + this.state.nextStation
+      + ' in ' + this.state.timeToStation + '\n'
+    );
   }
 
   componentDidMount() {
-    this.interval = setInterval(() => this.update(), 3000)
+    this.interval = setInterval(() => this.update(), 30000)
   }
 
   componentWillUnmount() {

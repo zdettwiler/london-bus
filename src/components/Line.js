@@ -10,6 +10,7 @@ class Line extends Component {
       direction: '',
       origin: '',
       destination: '',
+      lineRoute: [],
       busesIds: [],
     }
   }
@@ -26,6 +27,18 @@ class Line extends Component {
         })
       })
 
+    fetch('https://api.tfl.gov.uk/line/'+ this.state.line +'/route/sequence/outbound')
+      .then(response => response.json())
+      .then(data => {
+        let lineRoute = data.lineStrings[0]
+          .match(/\[(-?\d+.\d+,\d+.\d+)\]/g)
+          .map(posStr => JSON.parse(posStr));
+
+        this.setState({
+          lineRoute
+        })
+      })
+
     // Get all buses
     fetch('https://api.tfl.gov.uk/line/'+ this.state.line + '/arrivals')
       .then(response => response.json())
@@ -39,12 +52,12 @@ class Line extends Component {
   }
 
   render() {
-    console.log(
-      this.state.direction,
-      this.state.origin,
-      this.state.destination
-    )
-    console.log(this.state.busesIds)
+    // console.log(
+    //   this.state.direction,
+    //   this.state.origin,
+    //   this.state.destination
+    // )
+    console.log(this.state.lineRoute)
     // let data = this.state.data.routeSections
     // console.log(this.state.serverData)// <h1>Line {this.state.line}</h1>
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Line from './components/Line'
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
+import { Map, TileLayer } from 'react-leaflet'
 
 class App extends Component {
   constructor() {
