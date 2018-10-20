@@ -3,11 +3,13 @@
 ### Interface
 - [x] display map
 - [ ] line selector drop down
+- [ ] onload centre map on line route
 
 ### Line
 - [x] get line data
 - [x] display line route
-- [ ] display line stops
+- [x] display line stops
+- [ ] redesign
 
 
 ### Bus

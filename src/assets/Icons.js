@@ -5,8 +5,8 @@ import imgBus from './bus.png'
 const iconRedDot = L.icon({
   iconUrl: imgRedDot,
   iconRetinaUrl: imgRedDot,
-  popupAnchor: [10, 10],
-  iconSize: [20, 20],
+  popupAnchor: [5, 5],
+  iconSize: [10, 10],
   className: 'icon-red-dot'
 });
 

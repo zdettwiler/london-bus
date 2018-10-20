@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import Bus from './Bus'
-import { Polyline } from 'react-leaflet'
+import { Marker, Popup, Polyline } from 'react-leaflet'
+import { iconRedDot } from '../assets/Icons';
 
 class Line extends Component {
 
@@ -11,7 +12,8 @@ class Line extends Component {
       direction: '',
       origin: '',
       destination: '',
-      lineRoute: [],
+      route: [],
+      stops: [],
       busesIds: [],
     }
   }
@@ -31,15 +33,25 @@ class Line extends Component {
     fetch('https://api.tfl.gov.uk/line/'+ this.state.line +'/route/sequence/outbound')
       .then(response => response.json())
       .then(data => {
-        let lineRoute = data.lineStrings[0]
+
+        let route = data.lineStrings[0]
           .match(/\[(-?\d+.\d+,\d+.\d+)\]/g)
           .map(posStr => {
             let posArr = JSON.parse(posStr)
             return [posArr[1], posArr[0]];
           });
 
+        let stops = data.stations.map( (station) => {
+          return {
+            name: station.name,
+            latLon: [station.lat, station.lon],
+            // id: station.id
+          }
+        })
+
         this.setState({
-          lineRoute
+          route,
+          stops
         })
       })
 
@@ -61,18 +73,31 @@ class Line extends Component {
       this.state.origin,
       this.state.destination
     )
-    // console.log(this.state.lineRoute)
+    // console.log(this.state.route)
     // let data = this.state.data.routeSections
     // console.log(this.state.serverData)// <h1>Line {this.state.line}</h1>
 
     return (
       <div>
         <Polyline
-          positions={this.state.lineRoute}
+          positions={this.state.route}
           color='red'
           weight='4'
           opacity='0.5'
         />
+
+      {this.state.stops.map((stop, i) => (
+          <Marker
+            position={stop.latLon}
+            icon={iconRedDot}
+            key={i}
+          >
+            <Popup>
+              {stop.name}
+            </Popup>
+          </Marker>
+        ))}
+
         {this.state.busesIds.map(busId => (
           <Bus id={busId} line={this.state.line} key={busId} />
         ))}
