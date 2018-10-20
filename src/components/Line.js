@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import Bus from './Bus'
+import { Polyline } from 'react-leaflet'
 
 class Line extends Component {
 
@@ -32,7 +33,10 @@ class Line extends Component {
       .then(data => {
         let lineRoute = data.lineStrings[0]
           .match(/\[(-?\d+.\d+,\d+.\d+)\]/g)
-          .map(posStr => JSON.parse(posStr));
+          .map(posStr => {
+            let posArr = JSON.parse(posStr)
+            return [posArr[1], posArr[0]];
+          });
 
         this.setState({
           lineRoute
@@ -52,19 +56,25 @@ class Line extends Component {
   }
 
   render() {
-    // console.log(
-    //   this.state.direction,
-    //   this.state.origin,
-    //   this.state.destination
-    // )
-    console.log(this.state.lineRoute)
+    console.log(
+      this.state.direction,
+      this.state.origin,
+      this.state.destination
+    )
+    // console.log(this.state.lineRoute)
     // let data = this.state.data.routeSections
     // console.log(this.state.serverData)// <h1>Line {this.state.line}</h1>
 
     return (
       <div>
+        <Polyline
+          positions={this.state.lineRoute}
+          color='red'
+          weight='4'
+          opacity='0.5'
+        />
         {this.state.busesIds.map(busId => (
-          <Bus id={busId} line={this.state.line} key={busId}/>
+          <Bus id={busId} line={this.state.line} key={busId} />
         ))}
       </div>
     );
