@@ -3,7 +3,7 @@
 ### Interface
 - [x] display map
 - [ ] line selector drop down
-- [ ] onload centre map on line route
+- [ ] on load, centre map on line route
 
 ### Line
 - [x] get line data
@@ -15,7 +15,8 @@
 ### Bus
 - [x] get list of buses on line
 - [x] get bus next stop
-- [ ] get next stop position
-- [ ] display bus at next stop
+- [x] get next stop position
+- [x] display bus at next stop
+- [x] calculate live timeToStation
 - [ ] animate bus along route path
 - [ ] calculate bus approx position
