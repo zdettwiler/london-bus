@@ -10,10 +10,10 @@ class Bus extends Component {
       id: this.props.id,
       line: this.props.line,
       nextStation: '',
-      nextStationLat: 0.0,
-      nextStationLon: 0.0,
+      currentLat: 0.0,
+      currentLon: 0.0,
       timeToStation: '',
-      timeOfPrediction: ''
+      expectedArrival: ''
     }
     // console.log(this.state.id)
   }
@@ -31,38 +31,38 @@ class Bus extends Component {
       .then(response => response.json())
       .then(data => {
         let soonestArrival = data.sort(this.compare)[0]
-        this.setState({
-          nextStation: soonestArrival.stationName,
-          timeToStation: soonestArrival.timeToStation,
-          timeOfPrediction: new Date(soonestArrival.timestamp)
-        })
+        if (soonestArrival) {
+          this.setState({
+            nextStation: soonestArrival.stationName,
+            timeToStation: Math.round((new Date(soonestArrival.expectedArrival) - new Date())/1000),
+            expectedArrival: new Date(soonestArrival.expectedArrival)
+          })
+        }
       })
-      // .then(
-      //   fetch('https://api.tfl.gov.uk/line/'+ this.state.line +'/route/sequence/outbound')
-      //     .then(response => response.json())
-      //     .then(data => {
-      //       let r = data.stations.filter(stationObject => {
-      //         // console.log(stationObject.name)
-      //         return stationObject.name == this.state.nextStation
-      //       })[0]
-      //       if (r) {
-      //         this.setState({
-      //           nextStationLat: r.lat,
-      //           nextStationLon: r.lon
-      //         })
-      //       }
-      //     })
-      // )
+      .then(fetch('https://api.tfl.gov.uk/line/'+ this.state.line +'/route/sequence/outbound')
+        .then(response => response.json())
+        .then(data => {
+          let r = data.stations.filter(stationObject => {
+            // console.log(stationObject.name)
+            return stationObject.name === this.state.nextStation
+          })[0]
+          if (r) {
+            this.setState({
+              currentLat: r.lat,
+              currentLon: r.lon
+            })
+          }
+        })
+      )
 
     console.log(
-      this.state.timeOfPrediction + '\n'
-      + this.state.id + ': arriving at ' + this.state.nextStation
-      + ' in ' + this.state.timeToStation + '\n'
+      this.state.id + ': arriving at ' + this.state.nextStation
+      + ' in ' + this.state.timeToStation + 's\n'
     );
   }
 
   componentDidMount() {
-    this.interval = setInterval(() => this.update(), 30000)
+    this.interval = setInterval(() => this.update(), 2000)
   }
 
   componentWillUnmount() {
@@ -72,11 +72,11 @@ class Bus extends Component {
   render() {
     return (
       // <p>
-      //   {this.state.id} arriving at {this.state.nextStation} in {this.state.timeToStation} sec. [as of {this.state.timeOfPrediction}]<br/>
+      //   {this.state.id} arriving at {this.state.nextStation} in {this.state.timeToStation} sec. [as of {this.state.expectedArrival}]<br/>
       //   {this.state.nextStationLat}, {this.state.nextStationLon}
       // </p>
       <Marker
-        position={[this.state.nextStationLat, this.state.nextStationLon]}
+        position={[this.state.currentLat, this.state.currentLon]}
         icon={iconBus}
       >
         <Popup>

@@ -30,6 +30,7 @@ class Line extends Component {
         })
       })
 
+    // Get route
     fetch('https://api.tfl.gov.uk/line/'+ this.state.line +'/route/sequence/outbound')
       .then(response => response.json())
       .then(data => {
