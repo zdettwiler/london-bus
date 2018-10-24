@@ -1,6 +1,13 @@
 import React, {Component} from 'react'
 import { iconBus } from '../assets/Icons';
 import { Marker, Popup } from 'react-leaflet'
+import {
+  toRadians,
+  toDegrees,
+  dist,
+  bearing,
+  destPt
+} from '../utils'
 
 class Bus extends Component {
 
@@ -10,8 +17,10 @@ class Bus extends Component {
       id: this.props.id,
       line: this.props.line,
       nextStation: '',
-      currentLat: 0.0,
-      currentLon: 0.0,
+      nextStationPos: [0.0, 0.0],
+      prevStationPos: [0.0, 0.0],
+      currentPos: [0.0, 0.0], // [lat, lon]
+      speed: 9, // m/s, = 32.4 km/h
       timeToStation: '',
       expectedArrival: ''
     }
@@ -24,6 +33,21 @@ class Bus extends Component {
     if (a.timeToStation > b.timeToStation)
       return 1;
     return 0;
+  }
+
+  getCurrentPos() {
+    // get distance from station
+    let distanceToStation = this.state.speed * this.state.timeToStation
+    // find segment of route of bus
+    // find bearing between segment extremities
+    let bearingToStation = bearing(this.state.prevStationPos, this.state.nextStationPos)
+    // find position with distance on segment
+    let position = destPt(this.state.nextStationPos, distanceToStation, bearingToStation)
+    console.log(this.state.prevStationPos, this.state.nextStationPos)
+    console.log(distanceToStation, bearingToStation, position)
+    this.setState({
+      currentPos: position
+    })
   }
 
   update() {
@@ -48,17 +72,22 @@ class Bus extends Component {
           })[0]
           if (r) {
             this.setState({
-              currentLat: r.lat,
-              currentLon: r.lon
+              prevStationPos: this.state.nextStationPos,
+              nextStationPos: [r.lat, r.lon],
+              nextStation: r.name,
+              // currentPos: [r.lat, r.lon]
             })
           }
         })
       )
+      .then(() => {
+        this.getCurrentPos()
+      })
 
-    console.log(
-      this.state.id + ': arriving at ' + this.state.nextStation
-      + ' in ' + this.state.timeToStation + 's\n'
-    );
+    // console.log(
+    //   this.state.id + ': arriving at ' + this.state.nextStation + '(' + this.state.currentPos + ')'
+    //   + ' in ' + this.state.timeToStation + 's\n'
+    // );
   }
 
   componentDidMount() {
@@ -76,7 +105,7 @@ class Bus extends Component {
       //   {this.state.nextStationLat}, {this.state.nextStationLon}
       // </p>
       <Marker
-        position={[this.state.currentLat, this.state.currentLon]}
+        position={this.state.currentPos}
         icon={iconBus}
       >
         <Popup>

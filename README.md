@@ -18,5 +18,7 @@
 - [x] get next stop position
 - [x] display bus at next stop
 - [x] calculate live timeToStation
-- [ ] animate bus along route path
-- [ ] calculate bus approx position
+- [x] calculate distance to next stop (d=v*t)
+- [x] write function to calculate distance between two lat/lon points
+- [ ] find position of bus at distance along route path from stop
+- [ ]
